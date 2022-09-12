@@ -1,7 +1,17 @@
+import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 
 void main() {
   runApp(const MyApp());
+
+  Firebase.initializeApp();
+
+  // Firebase.initializeApp().then((_) {
+  //   FirebaseFirestore.instance.collection("test").get().then((value) {
+  //     print('\n\nvalue ${value.docChanges}\n\n');
+  //   });
+  // });
 }
 
 class MyApp extends StatelessWidget {
@@ -9,6 +19,11 @@ class MyApp extends StatelessWidget {
 
   @override
   Widget build(BuildContext context) {
+    FirebaseFirestore.instance
+        .collection("Testando")
+        .doc("02")
+        .set({"Codigo": "Asx!5505"});
+
     return MaterialApp(
       title: 'Flutter Demo',
       theme: ThemeData(
