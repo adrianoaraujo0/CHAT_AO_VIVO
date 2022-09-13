@@ -1,25 +1,24 @@
 import 'package:flutter/material.dart';
-import 'package:flutter/src/widgets/container.dart';
-import 'package:flutter/src/widgets/framework.dart';
 
 class TextComposer extends StatefulWidget {
   const TextComposer({super.key});
 
   @override
-  State<TextComposer> createState() => _MyWidgetState();
+  State<TextComposer> createState() => _TextComposerState();
 }
 
-class _MyWidgetState extends State<TextComposer> {
+class _TextComposerState extends State<TextComposer> {
   bool isComposing = false;
 
   @override
   Widget build(BuildContext context) {
     return Container(
+      margin: EdgeInsets.symmetric(horizontal: 8),
       child: Row(
         children: [
           IconButton(
-            onPressed: () {},
             icon: Icon(Icons.photo_camera),
+            onPressed: () {},
           ),
           Expanded(
             child: TextField(

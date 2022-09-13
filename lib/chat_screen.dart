@@ -1,23 +1,16 @@
+import 'package:aplicativo_chat/text_composer.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
 
-class ChatScreen extends StatefulWidget {
+class ChatScreen extends StatelessWidget {
   const ChatScreen({super.key});
 
   @override
-  State<ChatScreen> createState() => _ChatScreenState();
-}
-
-class _ChatScreenState extends State<ChatScreen> {
-  @override
   Widget build(BuildContext context) {
     return Scaffold(
-      appBar: AppBar(
-        title: Text("Olá"),
-        elevation: 0,
-      ),
-      body: Container(),
+      appBar: AppBar(title: Text("Olá")),
+      body: TextComposer(),
     );
   }
 }
