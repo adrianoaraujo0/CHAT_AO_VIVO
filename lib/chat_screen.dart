@@ -30,14 +30,46 @@ class ChatScreen extends StatelessWidget {
       data["imgUrl"] = url;
     }
 
-    if (text != null) data["text"] = text;
+    if (text != null) data["texto"] = text;
+
+    FirebaseFirestore.instance.collection("messages").add(data);
   }
 
   @override
   Widget build(BuildContext context) {
     return Scaffold(
       appBar: AppBar(title: Text("Olá")),
-      body: TextComposer(sendMessage),
+      body: Column(
+        children: [
+          Expanded(
+            child: StreamBuilder(
+              stream:
+                  FirebaseFirestore.instance.collection("messages").snapshots(),
+              builder: (context, snapshot) {
+                switch (snapshot.connectionState) {
+                  case ConnectionState.none:
+                  case ConnectionState.waiting:
+                    return Center(
+                      child: CircularProgressIndicator(),
+                    );
+                  default:
+                    List<DocumentSnapshot> documents =
+                        snapshot.data!.docs.reversed.toList();
+                    return ListView.builder(
+                      itemCount: documents.length,
+                      reverse: true,
+                      itemBuilder: (context, index) {
+                        return ListTile(
+                            title: Text(documents[index].data().toString()));
+                      },
+                    );
+                }
+              },
+            ),
+          ),
+          TextComposer(sendMessage),
+        ],
+      ),
     );
   }
 }
