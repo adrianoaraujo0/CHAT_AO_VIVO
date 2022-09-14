@@ -1,3 +1,4 @@
+import 'dart:collection';
 import 'dart:io';
 
 import 'package:aplicativo_chat/text_composer.dart';
@@ -53,14 +54,17 @@ class ChatScreen extends StatelessWidget {
                       child: CircularProgressIndicator(),
                     );
                   default:
-                    List<DocumentSnapshot> documents =
-                        snapshot.data!.docs.reversed.toList();
+                    List<DocumentSnapshot<Map<String, dynamic>>> documents =
+                        snapshot.data!.docs;
+
                     return ListView.builder(
                       itemCount: documents.length,
                       reverse: true,
                       itemBuilder: (context, index) {
+                        Map<String, dynamic>? data = documents[index].data();
                         return ListTile(
-                            title: Text(documents[index].data().toString()));
+                          title: Text("${data!["texto"]}"),
+                        );
                       },
                     );
                 }
