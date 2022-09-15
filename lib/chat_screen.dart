@@ -81,7 +81,7 @@ class _ChatScreenState extends State<ChatScreen> {
       //uploadtask: Uma classe que indica uma tarefa de upload em andamento.
       UploadTask task = FirebaseStorage.instance
           .ref()
-          .child(DateTime.now().millisecondsSinceEpoch.toString())
+          .child(user!.uid + DateTime.now().millisecondsSinceEpoch.toString())
           .putFile(File(imgFile.path));
 
       setState(() {
