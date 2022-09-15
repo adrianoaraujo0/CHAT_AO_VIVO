@@ -3,18 +3,74 @@ import 'dart:io';
 
 import 'package:aplicativo_chat/text_composer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
+import 'package:firebase_auth/firebase_auth.dart';
 import 'package:firebase_core/firebase_core.dart';
 import 'package:firebase_storage/firebase_storage.dart';
 import 'package:flutter/material.dart';
 import 'package:flutter/src/widgets/container.dart';
 import 'package:flutter/src/widgets/framework.dart';
+import 'package:google_sign_in/google_sign_in.dart';
 import 'package:image_picker/image_picker.dart';
 
-class ChatScreen extends StatelessWidget {
-  const ChatScreen({super.key});
+class ChatScreen extends StatefulWidget {
+  ChatScreen({super.key});
+
+  @override
+  State<ChatScreen> createState() => _ChatScreenState();
+}
+
+class _ChatScreenState extends State<ChatScreen> {
+  final GoogleSignIn googleSignIn = GoogleSignIn();
+  final GlobalKey<ScaffoldMessengerState> scaffoldKey =
+      GlobalKey<ScaffoldMessengerState>();
+
+  late User? currentUser;
+
+  @override
+  void initState() {
+    super.initState();
+
+    FirebaseAuth.instance.authStateChanges().listen((user) {
+      currentUser = user;
+    });
+  }
+
+  Future<User?> getUser() async {
+    if (currentUser != null) return currentUser;
+
+    try {
+      final GoogleSignInAccount? googleSignInAccount =
+          await googleSignIn.signIn();
+      final GoogleSignInAuthentication googleSignInAuthentication =
+          await googleSignInAccount!.authentication;
+
+      final AuthCredential credential = GoogleAuthProvider.credential(
+          idToken: googleSignInAuthentication.idToken,
+          accessToken: googleSignInAuthentication.accessToken);
+      final UserCredential userCredential =
+          await FirebaseAuth.instance.signInWithCredential(credential);
+
+      User? user = userCredential.user;
+      return user;
+    } catch (error) {
+      return null;
+    }
+  }
 
   void sendMessage({String? text, XFile? imgFile}) async {
-    Map<String, dynamic> data = {};
+    final User? user = await getUser();
+    if (user == null) {
+      scaffoldKey.currentState?.showSnackBar(
+        SnackBar(
+          content: Text("Nao foi possível fazer o login. Tente novamente."),
+        ),
+      );
+    }
+    Map<String, dynamic> data = {
+      "uid": user?.uid,
+      "senderName": user?.displayName,
+      "senderPhotoUrl": user?.photoURL,
+    };
 
     if (imgFile != null) {
       //uploadtask: Uma classe que indica uma tarefa de upload em andamento.
@@ -39,6 +95,7 @@ class ChatScreen extends StatelessWidget {
   @override
   Widget build(BuildContext context) {
     return Scaffold(
+      key: scaffoldKey,
       appBar: AppBar(title: Text("Olá")),
       body: Column(
         children: [
