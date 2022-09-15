@@ -1,6 +1,7 @@
 import 'dart:collection';
 import 'dart:io';
 
+import 'package:aplicativo_chat/chat_message.dart';
 import 'package:aplicativo_chat/text_composer.dart';
 import 'package:cloud_firestore/cloud_firestore.dart';
 import 'package:firebase_auth/firebase_auth.dart';
@@ -119,9 +120,16 @@ class _ChatScreenState extends State<ChatScreen> {
                       reverse: true,
                       itemBuilder: (context, index) {
                         Map<String, dynamic>? data = documents[index].data();
-                        return ListTile(
-                          title: Text("${data!["texto"]}"),
-                        );
+                        print(
+                            "-----------------------------------------------");
+                        if (data == null) {
+                          print("AAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAAA");
+                        }
+                        // print("${data.runtimeType}");
+                        print(
+                            "-----------------------------------------------");
+
+                        return ChatMessage(data, true);
                       },
                     );
                 }
